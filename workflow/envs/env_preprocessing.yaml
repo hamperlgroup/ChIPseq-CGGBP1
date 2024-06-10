@@ -1,0 +1,14 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - fastqc=0.12.1
+  - bowtie2=2.5.1
+  - samtools=1.17
+  - picard=3.0.0
+  - bedtools=2.31.0
+  - trim-galore=0.6.10
+  - deeptools=3.5.2
+  - macs2=2.2.7.1
+  - wget
+  - graphviz

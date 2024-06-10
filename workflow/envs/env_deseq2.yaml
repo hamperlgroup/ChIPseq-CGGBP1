@@ -1,0 +1,13 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base
+  - r-pheatmap
+  - r-ggplot2
+  - r-ggpubr
+  - r-scattermore
+  - bioconductor-rtracklayer
+  - bioconductor-ShortRead
+  - bioconductor-DESeq2
+  - bioconductor-sva

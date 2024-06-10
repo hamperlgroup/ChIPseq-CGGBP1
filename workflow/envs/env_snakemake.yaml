@@ -1,0 +1,8 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - snakemake-minimal=7.26.0
+  - python
+  - pandas
+  - r-base

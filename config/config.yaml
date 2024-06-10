@@ -1,0 +1,9 @@
+samples: "data/Design_file.csv"
+
+workdir: "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1"
+
+genomeFTP: http://ftp.sra.ebi.ac.uk/ensemblorg/pub/release-109/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+
+gtfFTP: http://ftp.sra.ebi.ac.uk/ensemblorg/pub/release-109/gtf/homo_sapiens/Homo_sapiens.GRCh38.109.gtf.gz
+
+bedBlackList: https://github.com/Boyle-Lab/Blacklist/raw/master/lists/hg38-blacklist.v2.bed.gz
