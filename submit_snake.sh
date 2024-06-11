@@ -54,7 +54,7 @@ start=`date +%s`
 date
 echo 'Running snakemake'
 
-snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile configs/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
+snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
 
 # snakemake --jobs 100 --latency-wait 60 --snakefile Snakefile --configfile snake_conf.yaml --cluster-config cluster_peer.json --cluster "sbatch --time={cluster.walltime} --nodes=1 --ntasks=1 --cpus-per-task=4 --mem={cluster.memory} -e {rule}.{jobid}.{wildcards}.err -o {rule}.{jobid}.{wildcards}.out --export ALL --parsable" --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 

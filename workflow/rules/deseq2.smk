@@ -7,7 +7,7 @@ rule deseq2:
         session="results/deseq2_genomewide/{TID}/final_sites.bed",
     params:
     conda:
-        "env_histone_data",
+        "../envs/env_deseq2.yaml",
     resources:
         mem_mb = 24000
     threads: 4
@@ -24,7 +24,7 @@ rule deseq2_insertions:
         session="results/deseq2_insertions/{TID}/sessionInfo.txt",
     params:
     conda:
-        "env_histone_data",
+        "../envs/env_deseq2.yaml",
     resources:
         mem_mb = 24000
     threads: 4
@@ -43,7 +43,7 @@ rule deseq2_comparison:
         session="results/deseq2_comparison/sessionInfo.txt",
     params:
     conda:
-        "env_histone_data",
+        "../envs/env_deseq2.yaml",
     resources:
         mem_mb = 24000
     threads: 4

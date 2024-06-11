@@ -3,8 +3,8 @@ rule trim_galore:
         fastq1="data/raw/{ID}_1.fastq.gz",
         fastq2="data/raw/{ID}_2.fastq.gz",
     output:
-        trimmed1="results/trimmed/{ID}_1.fq.gz",
-        trimmed2="results/trimmed/{ID}_2.fq.gz",
+        trimmed1="results/trimmed/{ID}_1_val_1.fq.gz",
+        trimmed2="results/trimmed/{ID}_2_val_2.fq.gz",
     params:
         dir="results/trimmed/"
     conda:

@@ -15,8 +15,8 @@ rule bowtie2_index:
 
 rule bowtie2_align:
     input:
-        trimmed1="results/trimmed/{ID}_1.fq.gz",
-        trimmed2="results/trimmed/{ID}_2.fq.gz",
+        trimmed1="results/trimmed/{ID}_1_val_1.fq.gz",
+        trimmed2="results/trimmed/{ID}_2_val_2.fq.gz",
         index=rules.bowtie2_index.output,
     output:
         bam="results/BAM/{ID}.bam",
