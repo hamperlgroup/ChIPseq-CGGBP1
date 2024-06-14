@@ -1,8 +1,8 @@
 rule bowtie2_index:
     input:
-        "data/genome/combined.fa",
+        "data/genome/genome.fa",
     output:
-        expand("data/genome/combined{ext}", ext = [".1.bt2", ".2.bt2", ".3.bt2", ".4.bt2", ".rev.1.bt2", ".rev.2.bt2"]),
+        expand("data/genome/genome{ext}", ext = [".1.bt2", ".2.bt2", ".3.bt2", ".4.bt2", ".rev.1.bt2", ".rev.2.bt2"]),
     conda:
         "../envs/env_preprocessing.yaml",
     resources:
@@ -10,7 +10,7 @@ rule bowtie2_index:
     threads: 24
     shell:
         """
-        bowtie2-build --threads {threads} {input} data/genome/combined
+        bowtie2-build --threads {threads} {input} data/genome/genome
         """
 
 rule bowtie2_align:
@@ -31,5 +31,5 @@ rule bowtie2_align:
     threads: 24
     shell:
         """
-        bowtie2 -x data/genome/combined --threads {threads} {params.bowtie2} -1 {input.trimmed1} -2 {input.trimmed2} 2> {log} | samtools view -Sbh -o {output.bam}
+        bowtie2 -x data/genome/genome --threads {threads} {params.bowtie2} -1 {input.trimmed1} -2 {input.trimmed2} 2> {log} | samtools view -Sbh -o {output.bam}
         """

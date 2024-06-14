@@ -1,4 +1,4 @@
-samples: "data/Design_file.csv"
+samples: "data/Design_file_public-CGGBP1.csv"
 
 workdir: "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1"
 

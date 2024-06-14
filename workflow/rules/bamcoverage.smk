@@ -67,7 +67,7 @@ rule bamcoverage:
 
 rule make_windows:
     input:
-        fai="data/genome/combined.fa.fai",
+        fai="data/genome/genome.fa.fai",
     output:
         bed="data/genome/bins.bed",
     params:
@@ -111,7 +111,7 @@ rule multisummary:
         """
 
 
-rule meancov:
+rule meancov_bw:
     input:
         bw= lambda wildcards: expand("results/coverage/{ID}.coverage.bw", ID = SampleTable['id'][SampleTable['group'] == wildcards.GID]),
     output:
@@ -127,20 +127,19 @@ rule meancov:
         --binSize 20 --numberOfProcessors {threads}
         """
 
-
-rule diffmeancov:
-    input:
-        bw1="results/covmean/{GID1}.coverage.bw",
-        bw2="results/covmean/{GID2}.coverage.bw",
-    output:
-        diff="results/covdiff/{GID1}_vs_{GID2}.coverage.bw",
-    conda:
-        "../envs/env_preprocessing.yaml",
-    resources:
-        mem_mb = 24000
-    threads: 24
-    shell:
-        """
-        bigwigCompare --bigwig1 {input.bw1} --bigwig2 {input.bw2} -o {output.diff} \
-        --binSize 100 --fixedStep --numberOfProcessors {threads}
-        """
+# rule diffmeancov:
+#     input:
+#         bw1="results/covmean/{GID1}.coverage.bw",
+#         bw2="results/covmean/{GID2}.coverage.bw",
+#     output:
+#         diff="results/covdiff/{GID1}_vs_{GID2}.coverage.bw",
+#     conda:
+#         "../envs/env_preprocessing.yaml",
+#     resources:
+#         mem_mb = 24000
+#     threads: 24
+#     shell:
+#         """
+#         bigwigCompare --bigwig1 {input.bw1} --bigwig2 {input.bw2} -o {output.diff} \
+#         --binSize 100 --fixedStep --numberOfProcessors {threads}
+#         """

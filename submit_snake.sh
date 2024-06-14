@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J Snake_ChIP-seq
+#SBATCH -J Snake_ChIP-seq_pub
 #SBATCH -p cpu_p
 #SBATCH -q cpu_normal
 #SBATCH --mem=8G
@@ -54,10 +54,9 @@ start=`date +%s`
 date
 echo 'Running snakemake'
 
+# --rerun-triggers mtime
 snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
-
-# snakemake --jobs 100 --latency-wait 60 --snakefile Snakefile --configfile snake_conf.yaml --cluster-config cluster_peer.json --cluster "sbatch --time={cluster.walltime} --nodes=1 --ntasks=1 --cpus-per-task=4 --mem={cluster.memory} -e {rule}.{jobid}.{wildcards}.err -o {rule}.{jobid}.{wildcards}.out --export ALL --parsable" --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
 end=`date +%s`
 runtime=$((end-start))

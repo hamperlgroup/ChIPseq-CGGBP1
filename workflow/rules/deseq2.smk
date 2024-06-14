@@ -1,6 +1,6 @@
 rule deseq2:
     input:
-        table="data/Design_file.csv",
+        table="data/Design_file_public-CGGBP1.csv",
         counts="results/counts/counts_per_bin.tab",
     output:
         bed="results/deseq2_genomewide/{TID}/sessionInfo.txt",
@@ -18,7 +18,7 @@ rule deseq2:
 
 rule deseq2_insertions:
     input:
-        table="data/Design_file.csv",
+        table="data/Design_file_public-CGGBP1.csv",
         counts="results/counts/counts_per_bin.tab",
     output:
         session="results/deseq2_insertions/{TID}/sessionInfo.txt",
@@ -35,7 +35,7 @@ rule deseq2_insertions:
 
 rule deseq2_comparison:
     input:
-        table="data/Design_file.csv",
+        table="data/Design_file_public-CGGBP1.csv",
         counts="results/counts/counts_per_bin.tab",
         res1 = "results/deseq2_genomewide/DMSO/sessionInfo.txt",
         res2 = "results/deseq2_insertions/DMSO/sessionInfo.txt",

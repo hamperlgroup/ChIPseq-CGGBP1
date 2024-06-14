@@ -1,3 +1,7 @@
+# Pipeline developed by Tamas Schauer for project 202205_chipseq_polii_ser2p
+
+/lustre/groups/ies/projects/metp_lab/tamas.schauer/Projects/Marcel/202205_chipseq_polii_ser2p
+
 # Environment
 
 ```

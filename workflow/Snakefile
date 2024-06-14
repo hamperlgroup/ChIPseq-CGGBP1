@@ -1,11 +1,11 @@
-############    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    ############
-        ############    -----   ChIP-seq analysis for CGGBP1 project   -----    ###########
-############    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    ############
+############    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    ############
+    ############    -----   ChIP-seq analysis for CGGBP1 project public data   -----    ############
+############    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^    ############
 
 ############    -----------------------------------------    ############
 ### ----------------------- About the script ------------------------ ###
 ############    -----------------------------------------    ############
-# Author: Tamas Schauer & Elizabeth Marquez-Gomez
+# Author: Tamas Schauer - Additions by Elizabeth Marquez-Gomez
 # Date: 2024-June
 # Version: 1
 # Subversion: 0
@@ -24,7 +24,6 @@ import pandas as pd
 import os
 
 
-
 ############    -----------------------------------------    ############
 ### ----------------------- General Arguments ----------------------- ###
 ############    -----------------------------------------    ############
@@ -39,6 +38,7 @@ SampleTable = pd.read_csv(config['samples'])
 fastqs = list(SampleTable['fastq_1'])+list(SampleTable['fastq_2'])
 fastqs = [i.replace('.fastq.gz','') for i in fastqs]
 
+
 #ids = [i.replace('_R1_001.fastq.gz','') for i in list(SampleTable['fastq_1'])]
 SampleTable['id'] = SampleTable['fastq_1']
 SampleTable = SampleTable.replace({'id': '_1.fastq.gz'}, '', regex=True)
@@ -48,6 +48,9 @@ gids = set(SampleTable['group'])
 
 SampleTable['nid'] = SampleTable['group'] + "_" + SampleTable['replicate'].astype(str)
 nids = list(SampleTable['nid'])
+
+ips = list(SampleTable[SampleTable.antibody != 'CTRL'].fastq_1)
+ips = [sample.replace('_1.fastq.gz','') for sample in ips]
 
 
 
@@ -62,11 +65,12 @@ include: 'rules/trim_galore.smk'
 include: 'rules/bowtie2.smk'
 include: 'rules/samtools.smk'
 include: 'rules/bamcoverage.smk'
-include: 'rules/deseq2.smk'
+include: 'rules/chipseeker.smk'
+# include: 'rules/deseq2.smk'
 include: 'rules/plot_profile.smk'
-include: 'rules/plot_heatmap.smk'
-include: 'rules/plot_meanheatmap.smk'
-include: 'rules/plot_diffheatmap.smk'
+# include: 'rules/plot_heatmap.smk'
+# include: 'rules/plot_meanheatmap.smk'
+# include: 'rules/plot_diffheatmap.smk'
 
 localrules: get_genome_files
 
@@ -75,13 +79,18 @@ rule all:
     input:
         expand("results/fastqc/{fastq}_fastqc.html", fastq = fastqs),
         expand("results/fragsize/{ID}.fragmentsize.png", ID = sids),
-        expand("results/metaplots/{ID}.scaled_plot.png", ID = sids),
         expand("results/cov2/{NID}.coverage.bw", NID = nids),
-        expand("results/heatmaps/{ID}.site.png", ID = sids),
-        expand("results/heatmapmean/{GID}.site.png", GID = gids),
-        expand("results/covdiff/{GID1}_vs_{GID2}.coverage.bw", GID1 = gids, GID2 = gids),
-        expand("results/heatdiff/{GID1}_vs_{GID2}.site.pdf", GID1 = gids, GID2 = gids),
-        expand("results/deseq2_genomewide/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
-        expand("results/deseq2_insertions/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
-        "results/deseq2_comparison/sessionInfo.txt",
+        expand("results/covmean/{GID}.coverage.bw", GID = gids),
+        expand("results/ChIP-peaks/peak_annotation/peak_regions_{IP}.bed", IP = ips),
+        expand("results/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
+        expand("results/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
+        expand("results/metaplots/replicates/{ID}.scaled_plot.png", ID = sids),
+        expand("results/metaplots/replicates/{ID}.heatmap_TSS.png", ID = sids),
+        # expand("results/heatmaps/{ID}.site.png", ID = sids),
+        # expand("results/heatmapmean/{GID}.site.png", GID = gids),
+        # expand("results/covdiff/{GID1}_vs_{GID2}.coverage.bw", GID1 = gids, GID2 = gids),
+        # expand("results/heatdiff/{GID1}_vs_{GID2}.site.pdf", GID1 = gids, GID2 = gids),
+        # expand("results/deseq2_genomewide/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
+        # expand("results/deseq2_insertions/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
+        # "results/deseq2_comparison/sessionInfo.txt",
         "data/genome/genome.gtf",

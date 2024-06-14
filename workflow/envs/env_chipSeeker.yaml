@@ -1,0 +1,13 @@
+name: chipSeeker
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - bedtools
+  - bioconductor-chipseeker
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconda::bioconductor-clusterprofiler
+  - conda-forge::r-languageserver
+  - bioconda::bioconductor-org.hs.eg.db
+  - conda-forge::r-optparse
+  - bioconda::r-annotables
