@@ -32,7 +32,7 @@ rule peak_annotation:
     input:
         peaks = "results/ChIP-peaks/peak_calling/{IP}_peaks_chr.narrowPeak"
     output:
-        regions = "results/ChIP-peaks/peak_annotation/peak_regions_{IP}.bed"
+        regions = "results/ChIP-peaks/peak_annotation/peaks_regions_{IP}.bed"
     params:
         sample = "{IP}"
     conda:

@@ -81,7 +81,7 @@ rule all:
         expand("results/fragsize/{ID}.fragmentsize.png", ID = sids),
         expand("results/cov2/{NID}.coverage.bw", NID = nids),
         expand("results/covmean/{GID}.coverage.bw", GID = gids),
-        expand("results/ChIP-peaks/peak_annotation/peak_regions_{IP}.bed", IP = ips),
+        expand("results/ChIP-peaks/peak_annotation/peaks_regions_{IP}.bed", IP = ips),
         expand("results/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
         expand("results/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
         expand("results/metaplots/replicates/{ID}.scaled_plot.png", ID = sids),
