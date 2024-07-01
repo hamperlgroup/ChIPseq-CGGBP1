@@ -40,6 +40,7 @@ echo " "
 
 # snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --dry-run --unlock
 # snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --dry-run > snakemake_log.txt
+# snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --dry-run --rerun-triggers mtime
 
 # snakemake --dag | dot -Tpdf > dag_all.pdf
 # snakemake --rulegraph | dot -Tpdf > rule_graph.pdf
@@ -55,7 +56,7 @@ date
 echo 'Running snakemake'
 
 # --rerun-triggers mtime
-snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
+snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --rerun-triggers mtime --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
 
 end=`date +%s`

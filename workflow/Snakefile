@@ -52,6 +52,8 @@ nids = list(SampleTable['nid'])
 ips = list(SampleTable[SampleTable.antibody != 'CTRL'].fastq_1)
 ips = [sample.replace('_1.fastq.gz','') for sample in ips]
 
+peaks = ['narrowPeak','broadPeak']
+
 
 
 ############    -----------------------------------------    ############
@@ -71,6 +73,7 @@ include: 'rules/plot_profile.smk'
 # include: 'rules/plot_heatmap.smk'
 # include: 'rules/plot_meanheatmap.smk'
 # include: 'rules/plot_diffheatmap.smk'
+include: 'rules/plots_coverage_coding_genes.smk'
 
 localrules: get_genome_files
 
@@ -81,7 +84,9 @@ rule all:
         expand("results/fragsize/{ID}.fragmentsize.png", ID = sids),
         expand("results/cov2/{NID}.coverage.bw", NID = nids),
         expand("results/covmean/{GID}.coverage.bw", GID = gids),
-        expand("results/ChIP-peaks/peak_annotation/peaks_regions_{IP}.bed", IP = ips),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/overlap_{IP}-SLAM_bulk.tsv", IP = ips, PEAKS = peaks),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/overlap_{IP}-SLAM_nascent.tsv", IP = ips, PEAKS = peaks),
+        # expand("results/MultiQC/{PEAKS}/multiqc_report.html", IP = ips, PEAKS = peaks),
         expand("results/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
         expand("results/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
         expand("results/metaplots/replicates/{ID}.scaled_plot.png", ID = sids),
@@ -94,3 +99,8 @@ rule all:
         # expand("results/deseq2_insertions/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
         # "results/deseq2_comparison/sessionInfo.txt",
         "data/genome/genome.gtf",
+        # expand("results/overlap_coding_genes/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
+        # expand("results/overlap_coding_genes/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
+        expand("results/overlap_coding_genes/metaplots/replicates/{IP}.scaled_plot.png", IP = ips),
+        expand("results/overlap_coding_genes/metaplots/replicates/{IP}.heatmap_TSS.png", IP = ips),
+

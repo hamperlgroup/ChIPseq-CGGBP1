@@ -17,6 +17,7 @@ rule scaled_matrix:
         --binSize 20 --skipZeros \
         --downstream 2000 --upstream 2000 \
         --regionBodyLength 4000 \
+        --missingDataAsZero \
         -o {output.mat}
         """
 
@@ -51,6 +52,7 @@ rule heatmap_TSS:
     shell:
         """
         plotHeatmap -m {input.mat} \
+        --colorMap magma --heatmapHeight 50 --heatmapWidth 10 \
         -o {output.plot}
         """
 
@@ -73,6 +75,7 @@ rule scaled_matrix_group:
         --binSize 20 --skipZeros \
         --downstream 2000 --upstream 2000 \
         --regionBodyLength 4000 \
+        --missingDataAsZero \
         -o {output.mat}
         """
 
@@ -107,5 +110,6 @@ rule heatmap_TSS_group:
     shell:
         """
         plotHeatmap -m {input.mat} \
+        --colorMap magma --heatmapHeight 50 --heatmapWidth 10 \
         -o {output.plot}
         """
