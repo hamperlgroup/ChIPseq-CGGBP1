@@ -1,3 +1,4 @@
+## One liner to extract protein coding genes from genome gtf --> workflow/scripts/coding_genes_filter.sh
 rule coding_genes_overlap:
     input:
         peaks = "results/ChIP-peaks/narrowPeak/peak_calling/{IP}_peaks.narrowPeak",
@@ -76,4 +77,23 @@ rule codingGenes_heatmap_TSS:
         plotHeatmap -m {input.mat} \
         --colorMap magma --heatmapHeight 50 --heatmapWidth 10 \
         -o {output.plot}
+        """
+
+rule merged_overlap_codingGenes:
+    input:
+        mergedPeaks = "results/ChIP-peaks/narrowPeak/merged/merged_{IPGID}.bed",
+        genes = "data/genome/protein_coding_genes.bed"
+    output:
+        "results/overlap_protein_coding_genes/overlapping_protein_coding_genes_{IPGID}.bed",
+        "results/overlap_protein_coding_genes/nonOverlapping_protein_coding_genes_{IPGID}.bed"
+    params:
+        sampleName = "{IPGID}"
+    conda:
+        'overlap_OK-DRIPc'
+    resources:
+        mem_mb = 24000
+    threads: 24
+    shell:
+        """
+        Rscript workflow/scripts/protein_coding_genes_merged_overlap.R --sampleName {params.sampleName} --mergedPeaks {input.mergedPeaks} --genesFile {input.genes}
         """
