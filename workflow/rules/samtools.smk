@@ -1,9 +1,9 @@
 rule samtools:
     input:
-        bam="results/BAM/{ID}.bam",
+        bam="results/BAM/align/{ID}.bam",
     output:
-        flt="results/BAM/{ID}.flt.bam",
-        bai="results/BAM/{ID}.flt.bam.bai",
+        flt="results/BAM/flt/{ID}.flt.bam",
+        bai="results/BAM/flt/{ID}.flt.bam.bai",
     params:
         mapqc = 12
     conda:
@@ -21,11 +21,11 @@ rule samtools:
 
 rule picard:
     input:
-        flt="results/BAM/{ID}.flt.bam",
-        bai="results/BAM/{ID}.flt.bam.bai",
+        flt="results/BAM/flt/{ID}.flt.bam",
+        bai="results/BAM/flt/{ID}.flt.bam.bai",
     output:
-        rmdup="results/BAM/{ID}.rmdup.bam",
-        bai="results/BAM/{ID}.rmdup.bam.bai",
+        rmdup="results/BAM/rmdup/{ID}.rmdup.bam",
+        bai="results/BAM/rmdup/{ID}.rmdup.bam.bai",
         idx="results/logs/picard/{ID}_idx.txt",
     params:
         rm = "TRUE"

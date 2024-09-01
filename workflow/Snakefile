@@ -40,19 +40,21 @@ fastqs = [i.replace('.fastq.gz','') for i in fastqs]
 
 
 #ids = [i.replace('_R1_001.fastq.gz','') for i in list(SampleTable['fastq_1'])]
-SampleTable['id'] = SampleTable['fastq_1']
-SampleTable = SampleTable.replace({'id': '_1.fastq.gz'}, '', regex=True)
+# SampleTable['id'] = SampleTable['fastq_1']
+# SampleTable = SampleTable.replace({'id': '_1.fastq.gz'}, '', regex=True)
 
-sids = list(SampleTable['id'])
+sample_id = list(SampleTable['sample_ID'])
+# sids = list(SampleTable['id'])
 gids = set(SampleTable['group'])
 
 SampleTable['nid'] = SampleTable['group'] + "_" + SampleTable['replicate'].astype(str)
 nids = list(SampleTable['nid'])
 
-ips = list(SampleTable[SampleTable.antibody != 'CTRL'].fastq_1)
-ips = [sample.replace('_1.fastq.gz','') for sample in ips]
+ips = list(SampleTable[SampleTable.antibody != 'CTRL'].sample_ID)
+# ips = [sample.replace('_1.fastq.gz','') for sample in ips]
 
-peaks = ['narrowPeak','broadPeak']
+# peaks = ['narrowPeak','broadPeak']
+peaks = ['narrowPeak']
 
 ipsGroup = set(SampleTable[SampleTable.antibody != 'CTRL'].group)
 ps2_5Groups = ['siControl_ps2_IP', 'siControl_ps5_IP', 'siCGGBP1_ps2_IP', 'siCGGBP1_ps5_IP']
@@ -69,6 +71,7 @@ include: 'rules/bowtie2.smk'
 include: 'rules/samtools.smk'
 include: 'rules/bamcoverage.smk'
 include: 'rules/chipseeker.smk'
+include: 'rules/SLAMseq_overlap.smk'
 # include: 'rules/deseq2.smk'
 include: 'rules/plot_profile.smk'
 # include: 'rules/plot_heatmap.smk'
@@ -76,6 +79,8 @@ include: 'rules/plot_profile.smk'
 # include: 'rules/plot_diffheatmap.smk'
 include: 'rules/plots_coverage_coding_genes.smk'
 include: 'rules/plots_coverage_merged_CGGBP1-genes.smk'
+include: 'rules/merge_replicates.smk'
+include: 'rules/motif.smk'
 
 localrules: get_genome_files
 
@@ -83,35 +88,33 @@ localrules: get_genome_files
 rule all:
     input:
         expand("results/fastqc/{fastq}_fastqc.html", fastq = fastqs),
-        expand("results/fragsize/{ID}.fragmentsize.png", ID = sids),
+        expand("results/fragsize/{ID}.fragmentsize.png", ID = sample_id),
         expand("results/cov2/{NID}.coverage.bw", NID = nids),
         expand("results/covmean/{GID}.coverage.bw", GID = gids),
-        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/overlap_{IP}-SLAM_bulk.tsv", IP = ips, PEAKS = peaks),
-        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/overlap_{IP}-SLAM_nascent.tsv", IP = ips, PEAKS = peaks),
-        # expand("results/MultiQC/{PEAKS}/multiqc_report.html", IP = ips, PEAKS = peaks),
+        expand("results/covmean/{GID}.coverage.bedgraph", GID = gids),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/replicates/overlap_{IPGID}-SLAM_bulk_unchanged.tsv", IPGID = ipsGroup, PEAKS = peaks),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/replicates/overlap_{IPGID}-SLAM_nascent_unchanged.tsv", IPGID = ipsGroup, PEAKS = peaks),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/merged/overlap_{IPGID}-SLAM_bulk_unchanged.tsv", IPGID = ipsGroup, PEAKS = peaks),
+        expand("results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/merged/overlap_{IPGID}-SLAM_nascent_unchanged.tsv", IPGID = ipsGroup, PEAKS = peaks),
         expand("results/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
         expand("results/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
-        expand("results/metaplots/replicates/{ID}.scaled_plot.png", ID = sids),
-        expand("results/metaplots/replicates/{ID}.heatmap_TSS.png", ID = sids),
-        # expand("results/heatmaps/{ID}.site.png", ID = sids),
-        # expand("results/heatmapmean/{GID}.site.png", GID = gids),
-        # expand("results/covdiff/{GID1}_vs_{GID2}.coverage.bw", GID1 = gids, GID2 = gids),
-        # expand("results/heatdiff/{GID1}_vs_{GID2}.site.pdf", GID1 = gids, GID2 = gids),
-        # expand("results/deseq2_genomewide/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
-        # expand("results/deseq2_insertions/{TID}/sessionInfo.txt", TID = ['DMSO','VE821']),
-        # "results/deseq2_comparison/sessionInfo.txt",
+        expand("results/metaplots/replicates/{ID}.scaled_plot.png", ID = sample_id),
+        expand("results/metaplots/replicates/{ID}.heatmap_TSS.png", ID = sample_id),
         "data/genome/genome.gtf",
         # expand("results/overlap_coding_genes/metaplots/merged/{GID}.scaled_plot.png", GID = gids),
         # expand("results/overlap_coding_genes/metaplots/merged/{GID}.heatmap_TSS.png", GID = gids),
-        expand("results/overlap_coding_genes/metaplots/replicates/{IP}.scaled_plot.png", IP = ips),
-        expand("results/overlap_coding_genes/metaplots/replicates/{IP}.heatmap_TSS.png", IP = ips),
-        expand("results/ChIP-peaks/narrowPeak/merged/merged_{IPGID}.bed", IPGID = ipsGroup),
+        # expand("results/overlap_coding_genes/metaplots/replicates/{IP}.scaled_plot.png", IP = ips),
+        # expand("results/overlap_coding_genes/metaplots/replicates/{IP}.heatmap_TSS.png", IP = ips),
+        expand( "results/ChIP-peaks/narrowPeak/merged/peak_annotation/annotation_{IPGID}.tsv", IPGID = ipsGroup),
         expand("results/overlap_CGGBP1_all_genes/overlapping_CGGBP1_all_genes_{CGGBP1}.bed", CGGBP1 = ['ChIP-seq_CGGBP1_ENCODE']),
         expand("results/overlap_CGGBP1_all_genes/nonOverlapping_CGGBP1_all_genes_{CGGBP1}.bed", CGGBP1 = ['ChIP-seq_CGGBP1_ENCODE']),
         # expand("results/overlap_CGGBP1_all_genes/metaplots/{PS2_5}.scaled_plot.png", PS2_5 = ps2_5Groups),
         # expand("results/overlap_CGGBP1_all_genes/metaplots/{PS2_5}.heatmap_TSS.png", PS2_5 = ps2_5Groups),
         expand("results/overlap_protein_coding_genes/overlapping_protein_coding_genes_{IPGID}.bed", IPGID = ipsGroup),
         expand("results/overlap_protein_coding_genes/nonOverlapping_protein_coding_genes_{IPGID}.bed", IPGID = ipsGroup),
+        expand("results/motifs/narrowPeak/homer/{IPGID}/homerResults.html", IPGID = ipsGroup),
+        expand("results/motifs/narrowPeak/meme/{IPGID}_Overshuffle/meme-chip.html", IPGID = ipsGroup),
+        expand("results/motifs/narrowPeak/meme/{IPGID}_noBck/meme-chip.html", IPGID = ipsGroup)
 
 
 

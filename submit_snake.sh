@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J Snake_ChIP-seq_pub
+#SBATCH -J Snake_ChIP-ENCODE
 #SBATCH -p cpu_p
 #SBATCH -q cpu_normal
 #SBATCH --mem=8G
@@ -56,7 +56,7 @@ date
 echo 'Running snakemake'
 
 # --rerun-triggers mtime
-snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --rerun-triggers mtime --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
+snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
 
 end=`date +%s`

@@ -15,11 +15,11 @@ rule bowtie2_index:
 
 rule bowtie2_align:
     input:
-        trimmed1="results/trimmed/{ID}_1_val_1.fq.gz",
-        trimmed2="results/trimmed/{ID}_2_val_2.fq.gz",
+        trimmed1=lambda wildcards: expand("results/trimmed/{sample}_1_val_1.fq.gz", sample = SampleTable["sample_name"][SampleTable["sample_ID"] == wildcards.ID]),
+        trimmed2=lambda wildcards: expand("results/trimmed/{sample}_2_val_2.fq.gz", sample = SampleTable["sample_name"][SampleTable["sample_ID"] == wildcards.ID]),
         index=rules.bowtie2_index.output,
     output:
-        bam="results/BAM/{ID}.bam",
+        bam="results/BAM/align/{ID}.bam",
     params:
         bowtie2="--end-to-end --very-sensitive --no-unal --no-mixed --no-discordant --dovetail -I 10 -X 700",
     conda:

@@ -1,25 +1,25 @@
-rule merging_replicates:
-    input:
-        peaksFiles = lambda wildcards: expand("results/ChIP-peaks/narrowPeak/peak_calling/{ID}_peaks.narrowPeak", ID = SampleTable['id'][SampleTable['group'] == wildcards.IPGID])
-    output:
-        "results/ChIP-peaks/narrowPeak/merged/merged_{IPGID}.bed"
-    params:
-        groupName = "{IPGID}",
-        peaks = lambda wildcards: ",".join(expand("results/ChIP-peaks/narrowPeak/peak_calling/{ID}_peaks.narrowPeak", ID = SampleTable['id'][SampleTable['group'] == wildcards.IPGID])),
-    conda:
-        'overlap_OK-DRIPc'
-    resources:
-        mem_mb = 24000
-    threads: 24
-    shell:
-        """
-        Rscript workflow/scripts/merge_peaks.R --groupName {params.groupName} --peaksFiles {params.peaks}
-        """
+# rule merging_replicates:
+#     input:
+#         peaksFiles = lambda wildcards: expand("results/ChIP-peaks/narrowPeak/peak_calling/{ID}_peaks.narrowPeak", ID = SampleTable['id'][SampleTable['group'] == wildcards.IPGID])
+#     output:
+#         "results/ChIP-peaks/narrowPeak/merged/merged_{IPGID}.bed"
+#     params:
+#         groupName = "{IPGID}",
+#         peaks = lambda wildcards: ",".join(expand("results/ChIP-peaks/narrowPeak/peak_calling/{ID}_peaks.narrowPeak", ID = SampleTable['id'][SampleTable['group'] == wildcards.IPGID])),
+#     conda:
+#         'overlap_OK-DRIPc'
+#     resources:
+#         mem_mb = 24000
+#     threads: 24
+#     shell:
+#         """
+#         Rscript workflow/scripts/merge_peaks.R --groupName {params.groupName} --peaksFiles {params.peaks}
+#         """
 
 
 rule CGGBP1_overlap_all_genes:
     input:
-        mergedCGGBP1 = "results/ChIP-peaks/narrowPeak/merged/merged_{CGGBP1}.bed",
+        mergedCGGBP1 = "results/ChIP-peaks/narrowPeak/merged/{CGGBP1}.bed",
         genes = "data/genome/genes_genome.gtf"
     output:
         "results/overlap_CGGBP1_all_genes/overlapping_CGGBP1_all_genes_{CGGBP1}.bed",

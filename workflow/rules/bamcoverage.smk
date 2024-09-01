@@ -1,6 +1,6 @@
 rule fragsize:
     input:
-        rmdup="results/BAM/{ID}.rmdup.bam",
+        rmdup="results/BAM/rmdup/{ID}.rmdup.bam",
     output:
         png="results/fragsize/{ID}.fragmentsize.png",
     conda:
@@ -20,7 +20,7 @@ rule fragsize:
 
 rule bamcoverage2:
     input:
-        rmdup=lambda wildcards: expand("results/BAM/{ID}.rmdup.bam", ID = SampleTable['id'][SampleTable['nid'] == wildcards.NID]),
+        rmdup=lambda wildcards: expand("results/BAM/rmdup/{ID}.rmdup.bam", ID = SampleTable['sample_ID'][SampleTable['nid'] == wildcards.NID]),
         bed="data/genome/hg38-blacklist.v2.bed",
     output:
         bw="results/cov2/{NID}.coverage.bw",
@@ -43,7 +43,7 @@ rule bamcoverage2:
 
 rule bamcoverage:
     input:
-        rmdup="results/BAM/{ID}.rmdup.bam",
+        rmdup="results/BAM/rmdup/{ID}.rmdup.bam",
         bed="data/genome/hg38-blacklist.v2.bed",
     output:
         bw="results/coverage/{ID}.coverage.bw",
@@ -85,7 +85,7 @@ rule make_windows:
 
 rule multisummary:
     input:
-        bam=expand("results/BAM/{ID}.rmdup.bam", ID = sids),
+        bam=expand("results/BAM/rmdup/{ID}.rmdup.bam", ID = sample_id),
         bins="data/genome/bins.bed",
         bed="data/genome/hg38-blacklist.v2.bed",
     output:
@@ -113,7 +113,7 @@ rule multisummary:
 
 rule meancov_bw:
     input:
-        bw= lambda wildcards: expand("results/coverage/{ID}.coverage.bw", ID = SampleTable['id'][SampleTable['group'] == wildcards.GID]),
+        bw= lambda wildcards: expand("results/coverage/{ID}.coverage.bw", ID = SampleTable['sample_ID'][SampleTable['group'] == wildcards.GID]),
     output:
         bw="results/covmean/{GID}.coverage.bw",
     conda:
@@ -126,6 +126,28 @@ rule meancov_bw:
         bigwigAverage --bigwigs {input.bw} -o {output.bw} \
         --binSize 20 --numberOfProcessors {threads}
         """
+
+rule meancov_bg:
+    input:
+        bw= lambda wildcards: expand("results/coverage/{ID}.coverage.bw", ID = SampleTable['sample_ID'][SampleTable['group'] == wildcards.GID]),
+    output:
+        bg="results/covmean/{GID}.coverage.bedgraph",
+    conda:
+        "../envs/env_preprocessing.yaml",
+    params:
+        tmp="results/covmean/tmp_{GID}.coverage.bedgraph",
+    resources:
+        mem_mb = 24000
+    threads: 24
+    shell:
+        """
+        bigwigAverage --bigwigs {input.bw} -o {params.tmp} \
+        --binSize 20 --numberOfProcessors {threads} \
+        --outFileFormat bedgraph
+
+        awk 'OFS="\\t" {{$1="chr"$1; print}}' {params.tmp} > {output.bg}
+        """
+
 
 # rule diffmeancov:
 #     input:
