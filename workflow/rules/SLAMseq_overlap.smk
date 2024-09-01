@@ -1,6 +1,6 @@
 rule SLAMseq_overlap:
     input:
-        peaks = "results/ChIP-peaks/{PEAKS}/peak_annotation/annotation_{IP}.tsv"
+        peaks = expand("results/ChIP-peaks/{PEAKS}/peak_annotation/annotation_{IP}.tsv", PEAKS = peaks, IP = ips)
     output:
         "results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/replicates/overlap_{IP}-SLAM_bulk_unchanged.tsv",
         "results/ChIP-peaks/{PEAKS}/SLAM-seq_overlap/replicates/overlap_{IP}-SLAM_nascent_unchanged.tsv"
