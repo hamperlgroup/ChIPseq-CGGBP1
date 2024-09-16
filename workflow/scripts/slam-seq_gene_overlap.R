@@ -9,7 +9,7 @@
 # Date: 2024-June
 # Version: 1
 # Subversion: 0
-# Environment: chipSeeker
+# Environment: overlap_OK-DRIPc
 # Using ChIP-seeker peaks will be annotated to identify genes in zones of interest from OK-seq analysis
 
 #-----> Usage

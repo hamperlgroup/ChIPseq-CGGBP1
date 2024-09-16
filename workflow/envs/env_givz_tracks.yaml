@@ -1,0 +1,14 @@
+name: givz_tracks
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base
+  - r-data.table
+  - bioconductor-rtracklayer
+  - bioconductor-gviz
+  - bioconductor-bsgenome.hsapiens.ucsc.hg38
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-org.hs.eg.db
+  - bioconductor-annotationdbi
+  - bioconductor-biomart

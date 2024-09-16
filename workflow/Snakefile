@@ -14,7 +14,7 @@
 
 #-----> Usage
 # snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --dry-run
-
+# multiqc results/* results/ChIP-peaks/narrowPeak/* results/ChIP-peaks/narrowPeak/merged/* results/motifs/narrowPeak/homer/* --outdir results/MultiQC
 
 ############    -----------------------------------------    ############
 ### --------------------------- Libraries --------------------------- ###

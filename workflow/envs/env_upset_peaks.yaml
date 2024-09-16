@@ -1,0 +1,15 @@
+name: upset_peaks
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - intervene
+  - python
+  - bedtools
+  - pybedtools
+  - pandas
+  - seaborn
+  - r-base
+  - r-upsetr
+  - r-corrplot
+  - cairo
