@@ -228,26 +228,22 @@ bg_encode_track <- DataTrack(range = bg_encode, type = "hist", genome = "hg38", 
 bg_ctrl <- "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1/results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(range = bg_ctrl, type = "hist", genome = "hg38", name = "ChIP-seq CGGBP1 control", col.histogram = "darkblue", fill.histogram = "darkblue", ylim = c(0, 1))
 
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
 
 # Select the gene of interest
-gene_info <- select(Homo.sapiens,
-    keys = c("RPS29", "RN7SL1"),
-    columns = c("GENEID", "GENENAME"), keytype = "SYMBOL"
-)
-gene_tx <- transcripts(Homo.sapiens,
-    filter = list("gene_id" = gene_info$GENEID),
-    columns = c("GENEID", "TXNAME", "SYMBOL")
-)
-names(mcols(gene_tx)) <- c("gene", "transcript", "symbol")
+gene_symbol <- gene
+gene_info <- select(org.Hs.eg.db, keys = gene_symbol, columns = c("SYMBOL", "ENTREZID"), keytype = "SYMBOL")
+entrez_id <- gene_info$ENTREZID
+gene_range <- genes(txdb, filter = list(gene_id = entrez_id))
 
 # Create the gene region track
-gene_track <- GeneRegionTrack(gene_tx,
-    genome = "hg38",
-    chromosome = as.character(seqnames(gene_tx)),
-    start = start(gene_tx) - 500000, end = end(gene_tx) + 500000,
-    showId = TRUE, collapseTranscripts = FALSE
+gene_track <- GeneRegionTrack(txdb,
+    chromosome = as.character(seqnames(gene_range)),
+    start = start(gene_range) - 5000, end = end(gene_range) + 5000,
+    name = "Gene region", strand = strand(gene_range), collapseTranscripts = "meta",
+    transcriptAnnotation = "gene", shape = "smallArrow"
 )
-
 # Load chromosome
 ideoTrack <- IdeogramTrack(genome = "hg38", chromosome = gene_track@chromosome)
 axTrack <- GenomeAxisTrack()
@@ -255,7 +251,7 @@ axTrack <- GenomeAxisTrack()
 # Plot the tracks
 pdf(paste0(outDir, "/", gene, "_track.pdf"))
 plotTracks(list(ideoTrack, axTrack, gene_track, bg_encode_track, bg_ctrl_track),
-    from = gene_track@start - 500000, to = gene_track@end + 500000,
+    from = gene_track@start - 5000, to = gene_track@end + 5000,
     chromosome = gene_track@chromosome, showBandId = TRUE, cex.bands = 0.9
 )
 dev.off()
