@@ -12,3 +12,4 @@ dependencies:
   - bioconductor-org.hs.eg.db
   - bioconductor-annotationdbi
   - bioconductor-biomart
+  - bioconductor-homo.sapiens
