@@ -31,6 +31,7 @@ library(GenomeInfoDb)
 library(rtracklayer)
 library(data.table)
 library(ggplot2)
+library(ggrepel)
 
 ############    -----------------------------------------    ############
 ### ----------------------- General Arguments ----------------------- ###
@@ -108,32 +109,64 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
     colnames(overlapping_gene_symbols)[colnames(overlapping_gene_symbols) == "overlapping_gene_symbols"] <- "GeneID"
     overlap <- merge(rnaSet, overlapping_gene_symbols, by = "GeneID")
 
+    ## Assign class
+    overlap <- cbind(overlap, class = "unchanged")
+    overlap[overlap$log2FC < -absFC & overlap$pvalue > pval, ]$class <- "down"
+    overlap[overlap$log2FC > absFC & overlap$pvalue > pval, ]$class <- "up"
 
+    ## Save hits
     subset <- subset(overlap, (log2FC > absFC | log2FC < -absFC) & pvalue > pval)
+    unchanged <- overlap[!overlap$GeneID %in% subset$GeneID, ]
+
+
     ## Scatter plot genes
+    xlim_value <- ceiling(max(abs(overlap$log2FC)))
+
     plot <- ggplot(overlap, aes(x = log2FC, y = pvalue)) +
-      geom_point(aes(colour = (log2FC > absFC | log2FC < -absFC) & pvalue > pval),
+      geom_point(aes(
+        colour = class,
         show.legend = FALSE, alpha = 0.5
-      ) +
-      geom_text(
+      )) +
+      scale_color_manual(values = c(
+        "unchanged" = "gray",
+        "down" = "blue",
+        "up" = "red"
+      )) +
+      # geom_text(
+      #   data = subset,
+      #   aes(log2FC, pvalue, label = GeneID),
+      #   nudge_x = 0.25, nudge_y = 0.25,
+      #   check_overlap = T, size = 2
+      # ) +
+      geom_text_repel(
         data = subset,
         aes(log2FC, pvalue, label = GeneID),
-        nudge_x = 0.25, nudge_y = 0.25,
-        check_overlap = T
+        # family = "Poppins",
+        size = 3,
+        min.segment.length = 0,
+        seed = 42,
+        box.padding = 0.5,
+        max.overlaps = Inf,
+        # arrow = arrow(length = unit(0.010, "npc")),
+        nudge_x = .15,
+        nudge_y = .5,
+        color = "grey50"
       ) +
-      geom_hline(yintercept = pval, linetype = "dashed", color = "red") +
-      geom_vline(xintercept = absFC, linetype = "dashed", color = "blue") +
-      geom_vline(xintercept = -absFC, linetype = "dashed", color = "blue") +
+      geom_hline(yintercept = pval, linetype = "dashed", color = "black") +
+      geom_vline(xintercept = absFC, linetype = "dashed", color = "black") +
+      geom_vline(xintercept = -absFC, linetype = "dashed", color = "black") +
+      xlim(-xlim_value, xlim_value) +
       ylab("-log10 q-value") +
       xlab(paste0("log2 FC ", rnaType, " RNA")) +
-      ggtitle(paste0("RNA ", rnaType, " - ", sample, " - ", peakMode))
+      ggtitle(paste0("RNA ", rnaType, " - ", sample, " - ", peakMode)) +
+      theme(
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")
+      )
 
     pdf(paste0(outDir, "/figures/SLAM-", rnaType, "_", sample, ".pdf"))
     print(plot)
     dev.off()
-
-    ## Save hits
-    unchanged <- overlap[!overlap$GeneID %in% subset$GeneID, ]
 
     write.table(subset, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_filtered.tsv"), sep = "\t", quote = F, row.names = F)
     write.table(unchanged, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_unchanged.tsv"), sep = "\t", quote = F, row.names = F)

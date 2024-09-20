@@ -226,10 +226,10 @@ dev.off()
 gene <- "SEC22B"
 # Load the BigWig file
 bg_encode <- "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1/results/covmean/ChIP-seq_CGGBP1_ENCODE.coverage.bedgraph"
-bg_encode_track <- DataTrack(range = bg_encode, type = "hist", genome = "hg38", name = "ChIP-seq CGGBP1", col.histogram = "darkblue", fill.histogram = "darkblue", ylim = c(0, 0.8))
+bg_encode_track <- DataTrack(range = bg_encode, type = "hist", genome = "hg38", name = "ChIP-seq CGGBP1", col.histogram = "#3e71b3", fill.histogram = "#3e71b3", ylim = c(0, 0.8))
 
 bg_ctrl <- "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1/results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
-bg_ctrl_track <- DataTrack(range = bg_ctrl, type = "hist", genome = "hg38", name = "ChIP-seq CGGBP1 control", col.histogram = "darkblue", fill.histogram = "darkblue", ylim = c(0, 0.8))
+bg_ctrl_track <- DataTrack(range = bg_ctrl, type = "hist", genome = "hg38", name = "ChIP-seq CGGBP1 control", col.histogram = "#3e71b3", fill.histogram = "#3e71b3", ylim = c(0, 0.8))
 
 # Select the gene of interest
 gene_symbol <- gene

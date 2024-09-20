@@ -56,7 +56,7 @@ date
 echo 'Running snakemake'
 
 # --rerun-triggers mtime
-snakemake --profile slurm_profile --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
+snakemake --profile slurm_profile --rerun-triggers mtime --snakefile workflow/Snakefile --configfile config/config.yaml --stats $log_path/snakemake.stats >& $log_path/snakemake.log  --rerun-incomplete --use-conda 
 
 
 end=`date +%s`
