@@ -18,7 +18,7 @@ rule SLAMseq_overlap:
     threads: 24
     shell:
         """
-            Rscript workflow/scripts/slam-seq_gene_overlap.R --sampleName {params.sample} --inputFile {input.peaks} --absCutoffFC {params.fc} --cutoffPval {params.pval} --peakMode {params.peakMode} --sampleMode {params.sampleMode}
+            Rscript workflow/scripts/slam-seq_gene_overlap.R --sampleName {params.sample} --inputFile results/ChIP-peaks/{params.peakMode}/peak_annotation/annotation_{params.sample}.tsv --absCutoffFC {params.fc} --cutoffPval {params.pval} --peakMode {params.peakMode} --sampleMode {params.sampleMode}
         """
 
 rule SLAMseq_consensus:
@@ -41,13 +41,13 @@ rule SLAMseq_consensus:
     threads: 24
     shell:
         """
-        for file_b in {params.files_bulk}; do cut -f1 $file_b >> ${params.path}/temp_{params.group}_b.tsv; done;
-        sort ${params.path}/temp_{params.group}_b.tsv | uniq > {output.bulk_group}
-        rm ${params.path}/temp_{params.group}_b.tsv
+        for file_b in {params.files_bulk}; do cut -f1 $file_b >> {params.path}/temp_{params.group}_b.tsv; done;
+        sort {params.path}/temp_{params.group}_b.tsv | uniq > {output.bulk_group}
+        rm {params.path}/temp_{params.group}_b.tsv
 
-        for file_n in {params.files_nascent}; do cut -f1 $file_n >> ${params.path}/temp_{params.group}_n.tsv; done;
-        sort ${params.path}/temp_{params.group}_n.tsv | uniq > {output.nascent_group}
-        rm ${params.path}/temp_{params.group}_n.tsv
+        for file_n in {params.files_nascent}; do cut -f1 $file_n >> {params.path}/temp_{params.group}_n.tsv; done;
+        sort {params.path}/temp_{params.group}_n.tsv | uniq > {output.nascent_group}
+        rm {params.path}/temp_{params.group}_n.tsv
         """
 
 ## In merged replicates

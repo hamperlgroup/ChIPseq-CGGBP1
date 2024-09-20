@@ -13,7 +13,7 @@
 # Using ChIP-seeker peaks will be annotated to identify genes in zones of interest from OK-seq analysis
 
 #-----> Usage
-# Rscript slam-seq_gene_overlap.R --sampleName [sample name] --inputFile [annot file]  --absCutoffFC [FC cutoff abs value] --cutoffPval [pval cutoff] --peakMode [broad | narrow]
+# Rscript slam-seq_gene_overlap.R --sampleName [sample name] --inputFile [annot file]  --absCutoffFC [FC cutoff abs value] --cutoffPval [pval cutoff] --peakMode [broad | narrow] --sampleMode [merged | replicates]
 
 
 ############    -----------------------------------------    ############
@@ -111,18 +111,18 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
 
     ## Assign class
     overlap <- cbind(overlap, class = "unchanged")
-    overlap[overlap$log2FC < -absFC & overlap$pvalue > pval, ]$class <- "down"
-    overlap[overlap$log2FC > absFC & overlap$pvalue > pval, ]$class <- "up"
+    overlap[overlap$log2FC < -absFC & overlap$negLog10pvalue > pval, ]$class <- "down"
+    overlap[overlap$log2FC > absFC & overlap$negLog10pvalue > pval, ]$class <- "up"
 
     ## Save hits
-    subset <- subset(overlap, (log2FC > absFC | log2FC < -absFC) & pvalue > pval)
+    subset <- subset(overlap, (log2FC > absFC | log2FC < -absFC) & negLog10pvalue > pval)
     unchanged <- overlap[!overlap$GeneID %in% subset$GeneID, ]
 
 
     ## Scatter plot genes
     xlim_value <- ceiling(max(abs(overlap$log2FC)))
 
-    plot <- ggplot(overlap, aes(x = log2FC, y = pvalue)) +
+    plot <- ggplot(overlap, aes(x = log2FC, y = negLog10pvalue)) +
       geom_point(aes(
         colour = class,
         show.legend = FALSE, alpha = 0.5
@@ -134,13 +134,13 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
       )) +
       # geom_text(
       #   data = subset,
-      #   aes(log2FC, pvalue, label = GeneID),
+      #   aes(log2FC, negLog10pvalue, label = GeneID),
       #   nudge_x = 0.25, nudge_y = 0.25,
       #   check_overlap = T, size = 2
       # ) +
       geom_text_repel(
         data = subset,
-        aes(log2FC, pvalue, label = GeneID),
+        aes(log2FC, negLog10pvalue, label = GeneID),
         # family = "Poppins",
         size = 3,
         min.segment.length = 0,

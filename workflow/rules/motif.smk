@@ -17,7 +17,7 @@ rule homer:
         findMotifsGenome.pl {input.peaks} {params.genomeVersion} {params.outDir} -size 200 -mask -p {params.cores}
         """
 
-# bedtools intersect -a ChIP-seq_CGGBP1_ENCODE_noCHR.bed -b /lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1/data/genome/protein_coding_genes.bed -wa > ChIP-seq_CGGBP1_ENCODE_proteinCodingGeneRegions.bed
+# bedtools intersect -a results/ChIP-peaks/narrowPeak/merged/ChIP-seq_CGGBP1_ENCODE_noCHR.bed -b data/genome/protein_coding_genes.bed -wa | uniq > results/ChIP-peaks/narrowPeak/merged/ChIP-seq_CGGBP1_ENCODE_proteinCodingGeneRegions.bed
 rule meme_input:
     input:
         # peaks = "results/ChIP-peaks/narrowPeak/merged/{IPGID}.bed"
