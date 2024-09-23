@@ -79,45 +79,53 @@ roothPath <- "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augus
 bulk <- as.data.frame(fread("data/SLAMseq_bulkRNAdata.csv"))
 nasc <- as.data.frame(fread("data/SLAMseq_nascentRNAdata.csv"))
 
+# Rscript workflow/scripts/slam-seq_gene_overlap.R --sampleName ChIP-seq_CGGBP1_ENCODE --inputFile results/ChIP-peaks/narrowPeak/merged/peak_annotation/annotation_ChIP-seq_CGGBP1_ENCODE.tsv --absCutoffFC 1 --cutoffPval 1 --peakMode narrowPeak --sampleMode merged
+
+sampleName <- "ChIP-seq_CGGBP1_ENCODE"
+inputFile <- "results/ChIP-peaks/narrowPeak/merged/peak_annotation/annotation_ChIP-seq_CGGBP1_ENCODE.tsv"
+absFC <- 1
+pval <- 1
+peakMode <- "narrowPeak"
+sampleMode <- "merged"
+
+## Wes Anderson palette - Zissou1
+# wes_palette("Zissou1"),
+# wes_palette("AsteroidCity1")[4], wes_palette("Royal2")[5]
+c(
+  "#3B9AB2", "#78B7C5", "#EBCC2A",
+  "#E1AF00", "#F21A00", "#6C8645", "#74A089", "#b0afa2"
+)
+
 ############    -----------------------------------------    ############
 ### --------------------------- Functions --------------------------- ###
 ############    -----------------------------------------    ############
 
 PlottingScatter <- function(sample, rnaSet, rnaType) {
-  ## Convert gene symbols to Entrez IDs
-  gene_ids <- mapIds(org.Hs.eg.db, keys = rnaSet$GeneID, column = "ENTREZID", keytype = "SYMBOL")
-
-  # Extract gene IDs from the peak annotations
+  ## Read peaks gene annotation
   peaks <- as.data.frame(fread(inputFile))
-  annotated_genes <- peaks$geneId
 
-  # Find overlap with SLAM-seq gene list
-  overlapping_genes <- intersect(gene_ids, annotated_genes)
+  ## Classification of SLAM-seq genes
+  rnaSet <- cbind(rnaSet, class = "Unchanged")
+  rnaSet[rnaSet$log2FC < -absFC & rnaSet$negLog10pvalue > pval, ]$class <- "Down"
+  rnaSet[rnaSet$log2FC > absFC & rnaSet$negLog10pvalue > pval, ]$class <- "Up"
 
+  ## Merge sets
+  overlap <- merge(rnaSet, peaks,
+    by.x = "GeneID", by.y = "SYMBOL"
+  )
+  overlap <- overlap[!duplicated(overlap$GeneID), ]
+
+  ## Check if not empty
   empty <- character(0)
-  if (identical(empty, overlapping_genes)) {
+  if (identical(empty, overlap)) {
     fileConn <- file(paste0(outDir, "/overlap_", sample, "-SLAM_", rnaType, ".tsv"))
     writeLines(c("Empty overlap!"), fileConn)
     close(fileConn)
     return()
   } else {
-    overlapping_gene_symbols <- mapIds(org.Hs.eg.db, keys = overlapping_genes, column = "SYMBOL", keytype = "ENTREZID")
-
-    # Print overlapping genes
-    overlapping_gene_symbols <- as.data.frame(overlapping_gene_symbols)
-    overlapping_gene_symbols$EntrezID <- rownames(overlapping_gene_symbols)
-    colnames(overlapping_gene_symbols)[colnames(overlapping_gene_symbols) == "overlapping_gene_symbols"] <- "GeneID"
-    overlap <- merge(rnaSet, overlapping_gene_symbols, by = "GeneID")
-
-    ## Assign class
-    overlap <- cbind(overlap, class = "unchanged")
-    overlap[overlap$log2FC < -absFC & overlap$negLog10pvalue > pval, ]$class <- "down"
-    overlap[overlap$log2FC > absFC & overlap$negLog10pvalue > pval, ]$class <- "up"
-
     ## Save hits
-    subset <- subset(overlap, (log2FC > absFC | log2FC < -absFC) & negLog10pvalue > pval)
-    unchanged <- overlap[!overlap$GeneID %in% subset$GeneID, ]
-
+    subset <- subset(overlap, class != "Unchanged")
+    unchanged <- subset(overlap, class == "Unchanged")
 
     ## Scatter plot genes
     xlim_value <- ceiling(max(abs(overlap$log2FC)))
@@ -125,32 +133,25 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
     plot <- ggplot(overlap, aes(x = log2FC, y = negLog10pvalue)) +
       geom_point(aes(
         colour = class,
-        show.legend = FALSE, alpha = 0.5
+        show.legend = FALSE, alpha = 0.7
       )) +
       scale_color_manual(values = c(
-        "unchanged" = "gray",
-        "down" = "blue",
-        "up" = "red"
+        "Unchanged" = "#b0afa2",
+        "Down" = "#3B9AB2",
+        "Up" = "#F21A00"
       )) +
-      # geom_text(
-      #   data = subset,
-      #   aes(log2FC, negLog10pvalue, label = GeneID),
-      #   nudge_x = 0.25, nudge_y = 0.25,
-      #   check_overlap = T, size = 2
-      # ) +
       geom_text_repel(
         data = subset,
         aes(log2FC, negLog10pvalue, label = GeneID),
-        # family = "Poppins",
         size = 3,
+        # min.segment.length = Inf,
         min.segment.length = 0,
         seed = 42,
-        box.padding = 0.5,
+        box.padding = 0.2,
         max.overlaps = Inf,
-        # arrow = arrow(length = unit(0.010, "npc")),
         nudge_x = .15,
         nudge_y = .5,
-        color = "grey50"
+        color = "#b0afa2"
       ) +
       geom_hline(yintercept = pval, linetype = "dashed", color = "black") +
       geom_vline(xintercept = absFC, linetype = "dashed", color = "black") +
@@ -164,7 +165,8 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
         panel.background = element_blank(), axis.line = element_line(colour = "black")
       )
 
-    pdf(paste0(outDir, "/figures/SLAM-", rnaType, "_", sample, ".pdf"))
+    # pdf(paste0(outDir, "/figures/SLAM-", rnaType, "_", sample, ".pdf"))
+    pdf(paste0(outDir, "/figures/SLAM-", rnaType, "_", sample, "_lines.pdf"))
     print(plot)
     dev.off()
 

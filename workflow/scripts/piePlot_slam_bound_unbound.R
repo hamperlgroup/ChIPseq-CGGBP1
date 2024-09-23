@@ -83,8 +83,12 @@ peakMode <- "narrowPeak"
 sampleMode <- "merged"
 
 ## Wes Anderson palette - Zissou1
-wes_palette("Zissou1")
-c("#3B9AB2", "#78B7C5", "#EBCC2A", "#E1AF00", "#F21A00")
+# wes_palette("Zissou1"),
+# wes_palette("AsteroidCity1")[4], wes_palette("Royal2")[5]
+c(
+    "#3B9AB2", "#78B7C5", "#EBCC2A",
+    "#E1AF00", "#F21A00", "#6C8645", "#74A089", "#b0afa2"
+)
 ############    -----------------------------------------    ############
 ### --------------------------- Functions --------------------------- ###
 ############    -----------------------------------------    ############
@@ -111,7 +115,7 @@ PlottingPieChart <- function(sample, rnaSet, rnaType) {
 
     # Step 2: Create the pie chart
     plot <- ggplot(up_summary, aes(x = "", y = percentage, fill = status)) +
-        geom_bar(stat = "identity", width = 1, color = "white") +
+        geom_bar(stat = "identity", width = 1, color = "white", alpha = 0.8) +
         coord_polar(theta = "y") +
         theme_void() + # Removes background, axes, etc.
         labs(
@@ -124,7 +128,7 @@ PlottingPieChart <- function(sample, rnaSet, rnaType) {
             show.legend = FALSE
         ) + # Add percentage labels
         theme(legend.position = "right") +
-        scale_fill_manual(values = c("#F21A00", "#E1AF00"))
+        scale_fill_manual(values = c("#e85544", "#b0afa2"))
 
     pdf(paste0(outDir, "/figures/pieChart_up_SLAM-", rnaType, "_", sample, ".pdf"))
     print(plot)
@@ -138,7 +142,7 @@ PlottingPieChart <- function(sample, rnaSet, rnaType) {
 
     # Step 2: Create the pie chart
     plot <- ggplot(down_summary, aes(x = "", y = percentage, fill = status)) +
-        geom_bar(stat = "identity", width = 1, color = "white") +
+        geom_bar(stat = "identity", width = 1, color = "white", alpha = 0.8) +
         coord_polar(theta = "y") +
         theme_void() + # Removes background, axes, etc.
         labs(
@@ -151,7 +155,7 @@ PlottingPieChart <- function(sample, rnaSet, rnaType) {
             show.legend = FALSE
         ) + # Add percentage labels
         theme(legend.position = "right") +
-        scale_fill_manual(values = c("#3B9AB2", "#E1AF00"))
+        scale_fill_manual(values = c("#3B9AB2", "#b0afa2"))
 
     pdf(paste0(outDir, "/figures/pieChart_down_SLAM-", rnaType, "_", sample, ".pdf"))
     print(plot)

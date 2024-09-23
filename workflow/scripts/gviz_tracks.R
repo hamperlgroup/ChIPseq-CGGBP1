@@ -17,8 +17,12 @@ txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 outDir <- "/lustre/groups/ies/projects/hamperl_lab/elizabeth.marquezgom/Augusto/ChIPseq-CGGBP1/results/genome_tracks"
 
 ## Wes Anderson palette - Zissou1
-wes_palette("Zissou1")
-c("#3B9AB2", "#78B7C5", "#EBCC2A", "#E1AF00", "#F21A00")
+# wes_palette("Zissou1"),
+# wes_palette("AsteroidCity1")[4], wes_palette("Royal2")[5]
+c(
+    "#3B9AB2", "#78B7C5", "#EBCC2A",
+    "#E1AF00", "#F21A00", "#6C8645", "#74A089", "#b0afa2"
+)
 
 
 ###################### --------------> RPS29 <--------------######################
@@ -29,7 +33,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 0.6)
 )
 
@@ -37,8 +41,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 0.6)
 )
 
@@ -80,7 +84,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 0.6)
 )
 
@@ -88,8 +92,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 0.6)
 )
 
@@ -131,7 +135,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 1)
 )
 
@@ -139,8 +143,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 1)
 )
 
@@ -182,7 +186,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 1)
 )
 
@@ -190,8 +194,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 1)
 )
 
@@ -234,7 +238,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 1)
 )
 
@@ -242,8 +246,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 1)
 )
 
@@ -286,7 +290,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 0.8)
 )
 
@@ -294,8 +298,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 0.8)
 )
 
@@ -338,7 +342,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    col.histogram = "#74A089", fill.histogram = "#74A089",
     ylim = c(0, 0.8)
 )
 
@@ -346,8 +350,8 @@ bg_ctrl <- "results/covmean/ChIP-seq_ctrl.coverage.bedgraph"
 bg_ctrl_track <- DataTrack(
     range = bg_ctrl,
     type = "hist", genome = "hg38",
-    name = "ChIP-seq CGGBP1 control",
-    col.histogram = "#78b7c5", fill.histogram = "#78b7c5",
+    name = "ChIP-seq CGGBP1 input",
+    col.histogram = "#b0afa2", fill.histogram = "#b0afa2",
     ylim = c(0, 0.8)
 )
 
