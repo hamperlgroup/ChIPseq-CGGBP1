@@ -1,0 +1,14 @@
+name: plotting_R
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base
+  - r-data.table
+  - r-wesanderson
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-org.hs.eg.db
+  - r-optparse
+  - r-ggplot2
+  - r-ggrepel
+  - r-dplyr

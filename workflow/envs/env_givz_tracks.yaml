@@ -13,3 +13,4 @@ dependencies:
   - bioconductor-annotationdbi
   - bioconductor-biomart
   - bioconductor-homo.sapiens
+  - r-wesanderson
