@@ -161,6 +161,26 @@ PlottingPieChart <- function(sample, rnaSet, rnaType) {
     print(plot)
     dev.off()
 
+
+    ## Write tables input for MEME
+    up_genes <- peaks[peaks$SYMBOL %in% up[up$status == "Bound", ]$GeneID, ] %>%
+        mutate(seqnames = gsub("chr", "", seqnames)) %>%
+        mutate(seqnames = as.numeric(seqnames)) %>%
+        select(seqnames, start, end, ENSEMBL, SYMBOL) %>%
+        arrange(seqnames, start, end)
+
+    # write.table(up_genes, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_up_genes.bed"), sep = "\t", quote = F, row.names = F, col.names = F)
+
+
+    down_genes <- peaks[peaks$SYMBOL %in% down[down$status == "Bound", ]$GeneID, ] %>%
+        mutate(seqnames = gsub("chr", "", seqnames)) %>%
+        mutate(seqnames = as.numeric(seqnames)) %>%
+        select(seqnames, start, end, ENSEMBL, SYMBOL) %>%
+        arrange(seqnames, start, end)
+
+    ## Remember chrX in ARAF and RBMX
+    # write.table(down_genes, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_down_genes.bed"), sep = "\t", quote = F, row.names = F, col.names = F)
+
     return()
 }
 

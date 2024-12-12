@@ -110,27 +110,30 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
   rnaSet[rnaSet$log2FC > absFC & rnaSet$negLog10pvalue > pval, ]$class <- "Up"
 
   ## Merge sets
-  overlap <- merge(rnaSet, peaks,
-    by.x = "GeneID", by.y = "SYMBOL"
-  )
-  overlap <- overlap[!duplicated(overlap$GeneID), ]
+  # overlap <- merge(rnaSet, peaks,
+  #   by.x = "GeneID", by.y = "SYMBOL"
+  # )
+  # overlap <- overlap[!duplicated(overlap$GeneID), ]
 
   ## Check if not empty
   empty <- character(0)
-  if (identical(empty, overlap)) {
+  if (identical(empty, rnaSet)) {
     fileConn <- file(paste0(outDir, "/overlap_", sample, "-SLAM_", rnaType, ".tsv"))
     writeLines(c("Empty overlap!"), fileConn)
     close(fileConn)
     return()
   } else {
     ## Save hits
-    subset <- subset(overlap, class != "Unchanged")
-    unchanged <- subset(overlap, class == "Unchanged")
+    subset <- subset(rnaSet, class != "Unchanged")
+    unchanged <- subset(rnaSet, class == "Unchanged")
+
+    priv_selection <- c("C7orf50", "EGR1", "EIF3F", "SEC22B", "RPS29", "IRF2BPL")
+    tagged <- subset[(subset$negLog10pvalue > 3) | (subset$GeneID %in% priv_selection), ]
 
     ## Scatter plot genes
-    xlim_value <- ceiling(max(abs(overlap$log2FC)))
+    xlim_value <- ceiling(max(abs(rnaSet$log2FC)))
 
-    plot <- ggplot(overlap, aes(x = log2FC, y = negLog10pvalue)) +
+    plot <- ggplot(rnaSet, aes(x = log2FC, y = negLog10pvalue)) +
       geom_point(aes(
         colour = class,
         show.legend = FALSE, alpha = 0.7
@@ -141,7 +144,7 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
         "Up" = "#F21A00"
       )) +
       geom_text_repel(
-        data = subset,
+        data = tagged,
         aes(log2FC, negLog10pvalue, label = GeneID),
         size = 3,
         # min.segment.length = Inf,
@@ -151,7 +154,7 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
         max.overlaps = Inf,
         nudge_x = .15,
         nudge_y = .5,
-        color = "#b0afa2"
+        color = "#5c5c57"
       ) +
       geom_hline(yintercept = pval, linetype = "dashed", color = "black") +
       geom_vline(xintercept = absFC, linetype = "dashed", color = "black") +
@@ -170,8 +173,8 @@ PlottingScatter <- function(sample, rnaSet, rnaType) {
     print(plot)
     dev.off()
 
-    write.table(subset, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_filtered.tsv"), sep = "\t", quote = F, row.names = F)
-    write.table(unchanged, paste0(outDir, "/", sampleMode, "/overlap_", sample, "-SLAM_", rnaType, "_unchanged.tsv"), sep = "\t", quote = F, row.names = F)
+    write.table(subset, paste0(outDir, "/", sampleMode, "/SLAM_", rnaType, "_filtered.tsv"), sep = "\t", quote = F, row.names = F)
+    write.table(unchanged, paste0(outDir, "/", sampleMode, "/SLAM_", rnaType, "_unchanged.tsv"), sep = "\t", quote = F, row.names = F)
 
     return()
   }

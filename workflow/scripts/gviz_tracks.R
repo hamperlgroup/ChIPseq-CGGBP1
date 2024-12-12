@@ -8,8 +8,6 @@ library(org.Hs.eg.db)
 library(AnnotationDbi)
 library(wesanderson)
 
-# library(biomaRt)
-# library(Homo.sapiens)
 
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 
@@ -33,7 +31,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#3B9AB2", fill.histogram = "#3B9AB2",
     ylim = c(0, 0.6)
 )
 
@@ -84,7 +82,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#e85544", fill.histogram = "#e85544",
     ylim = c(0, 0.6)
 )
 
@@ -135,7 +133,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#3B9AB2", fill.histogram = "#3B9AB2",
     ylim = c(0, 1)
 )
 
@@ -186,7 +184,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#e85544", fill.histogram = "#e85544",
     ylim = c(0, 1)
 )
 
@@ -238,7 +236,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#e85544", fill.histogram = "#e85544",
     ylim = c(0, 1)
 )
 
@@ -290,7 +288,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#3B9AB2", fill.histogram = "#3B9AB2",
     ylim = c(0, 0.8)
 )
 
@@ -342,7 +340,7 @@ bg_encode_track <- DataTrack(
     range = bg_encode,
     type = "hist", genome = "hg38",
     name = "ChIP-seq CGGBP1",
-    col.histogram = "#74A089", fill.histogram = "#74A089",
+    col.histogram = "#3B9AB2", fill.histogram = "#3B9AB2",
     ylim = c(0, 0.8)
 )
 

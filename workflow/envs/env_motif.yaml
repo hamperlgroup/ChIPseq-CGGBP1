@@ -1,0 +1,14 @@
+name: motif
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - homer
+  - python
+  - meme
+  - bedtools
+  - imagemagick
+## Additions for meme
+# perl $CONDA_PREFIX/envs/env_summerschool2024_peakfinding/share/homer/configureHomer.pl -update
+# perl $CONDA_PREFIX/envs/env_summerschool2024_peakfinding/share/homer/configureHomer.pl -install hg38
+# perl $CONDA_PREFIX/envs/env_summerschool2024_peakfinding/share/homer/configureHomer.pl -list
